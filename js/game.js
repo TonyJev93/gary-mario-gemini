@@ -53,7 +53,7 @@ function initLevel() {
         for (let c = 0; c < worldMap[r].length; c++) {
             const type = worldMap[r][c];
             const x = c * TILE_SIZE; const y = r * TILE_SIZE;
-            if (type === 1 || type === 2 || type === 6) platforms.push({ x, y, width: TILE_SIZE, height: TILE_SIZE, type, hit: false });
+            if (type === 1 || type === 2 || type === 6 || type === 7) platforms.push({ x, y, width: TILE_SIZE, height: TILE_SIZE, type, hit: false, broken: false });
             else if (type === 3) coins.push({ x: x + 10, y: y + 10, width: 20, height: 20, collected: false });
             else if (type === 4) enemies.push(new Enemy(x, y + 4));
             else if (type === 5) goal = { x: x + 15, y: y - 240, width: 10, height: 280 };
@@ -101,6 +101,11 @@ function update() {
                     plat.hit = true; screenShake = 5;
                     createExplosion(plat.x + plat.width / 2, plat.y, '#FFD700', 8);
                     mushrooms.push(new Mushroom(plat.x + 5, plat.y - 40));
+                } else if (plat.type === 7 && !plat.broken) {
+                    plat.broken = true; screenShake = 8;
+                    createExplosion(plat.x + plat.width / 2, plat.y + plat.height / 2, '#b45309', 20);
+                    platforms.splice(platforms.indexOf(plat), 1);
+                    createScoreText(plat.x, plat.y, 50);
                 }
             } else {
                 if (player.velX > 0) player.x = plat.x - player.width;
@@ -131,7 +136,6 @@ function update() {
 
     // 버섯 & 코인
     mushrooms.forEach((m, i) => {
-        m.update(platforms);
         if (player.x < m.x + m.width && player.x + player.width > m.x &&
             player.y < m.y + m.height && player.y + player.height > m.y) {
             mushrooms.splice(i, 1); player.isSuper = true; player.updateSize();
@@ -191,7 +195,13 @@ function draw() {
 
     ctx.save(); ctx.translate(-camera.x, 0);
     platforms.forEach(plat => {
-        ctx.fillStyle = plat.type === 6 ? (plat.hit ? '#475569' : '#fbbf24') : (plat.type === 1 ? '#78350f' : '#b45309');
+        if (plat.type === 7) {
+            ctx.fillStyle = '#d97706';
+        } else if (plat.type === 6) {
+            ctx.fillStyle = plat.hit ? '#475569' : '#fbbf24';
+        } else {
+            ctx.fillStyle = plat.type === 1 ? '#78350f' : '#b45309';
+        }
         ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
         ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.strokeRect(plat.x, plat.y, plat.width, plat.height);
         if (plat.type === 6 && !plat.hit) { ctx.fillStyle = 'white'; ctx.font = 'bold 20px Arial'; ctx.fillText('?', plat.x + 14, plat.y + 27); }
@@ -201,7 +211,7 @@ function draw() {
     ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.moveTo(goal.x + 10, goal.y); ctx.lineTo(goal.x + 60, goal.y + 25); ctx.lineTo(goal.x + 10, goal.y + 50); ctx.fill();
 
     coins.forEach(c => { if (!c.collected) { ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(c.x + 10, c.y + 10, 8, 0, Math.PI * 2); ctx.fill(); } });
-    mushrooms.forEach(m => m.draw(ctx, camera.x));
+    mushrooms.forEach(m => m.draw(ctx));
     ctx.restore();
 
     enemies.forEach(e => e.draw(ctx, camera.x));
