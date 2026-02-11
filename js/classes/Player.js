@@ -1,5 +1,3 @@
-import { JUMP_FORCE } from '../constants.js';
-
 // 플레이어
 export class Player {
     constructor() {
@@ -16,12 +14,15 @@ export class Player {
     }
 
     updateSize() {
+        const oldHeight = this.height;
         if (this.isSuper) {
             this.height = 56;
+            this.y -= (56 - oldHeight);
             document.getElementById('formVal').innerText = "Super";
             document.getElementById('formVal').className = "text-2xl font-black text-red-500";
         } else {
             this.height = 38;
+            this.y += (oldHeight - 38);
             document.getElementById('formVal').innerText = "Small";
             document.getElementById('formVal').className = "text-2xl font-black text-blue-400";
         }
