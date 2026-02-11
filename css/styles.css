@@ -1,0 +1,230 @@
+/* =============================================
+   Super Runner 2D - Mobile-Optimized Styles
+   ============================================= */
+
+/* --- Reset & Base --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    touch-action: none;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    height: 100dvh;
+    background-color: #0f172a;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+/* --- Canvas --- */
+canvas {
+    border: 4px solid #334155;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    background-color: #5C94FC;
+    image-rendering: pixelated;
+    display: block;
+    max-width: 100vw;
+    max-height: 60vh;
+}
+
+/* --- UI Panel (Desktop) --- */
+.ui-panel {
+    margin-top: 15px;
+    text-align: center;
+    background: rgba(15, 23, 42, 0.9);
+    padding: 12px 30px;
+    border-radius: 16px;
+    border: 1px solid #334155;
+    min-width: 550px;
+    backdrop-filter: blur(5px);
+}
+
+/* --- Virtual Touch Controls --- */
+.touch-controls {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 140px;
+    pointer-events: none;
+    z-index: 100;
+    padding: 0 16px 12px;
+}
+
+.touch-controls .dpad,
+.touch-controls .action-buttons {
+    pointer-events: auto;
+}
+
+.dpad {
+    position: absolute;
+    left: 20px;
+    bottom: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-buttons {
+    position: absolute;
+    right: 20px;
+    bottom: 24px;
+}
+
+.touch-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 24px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: background 0.08s, transform 0.08s;
+}
+
+.touch-btn:active,
+.touch-btn.active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.92);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.touch-btn-jump {
+    width: 80px;
+    height: 80px;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.18);
+    color: rgba(255, 120, 120, 0.85);
+}
+
+.touch-btn-jump:active,
+.touch-btn-jump.active {
+    background: rgba(239, 68, 68, 0.4);
+    transform: scale(0.92);
+    border-color: rgba(239, 68, 68, 0.7);
+}
+
+/* --- Mobile Landscape Optimization --- */
+@media (max-width: 1024px) and (hover: none) and (pointer: coarse) {
+    .touch-controls {
+        display: block;
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    body {
+        justify-content: flex-start;
+        padding: 0;
+    }
+
+    .game-header {
+        display: none;
+    }
+
+    .ui-panel {
+        display: none;
+    }
+
+    canvas {
+        border-width: 2px;
+        max-height: 100dvh;
+        max-width: 100vw;
+        width: 100vw;
+        height: 100dvh;
+        object-fit: contain;
+    }
+
+    .touch-controls {
+        display: block;
+        height: 120px;
+        padding-bottom: 8px;
+    }
+
+    .touch-btn {
+        width: 56px;
+        height: 56px;
+        font-size: 20px;
+    }
+
+    .touch-btn-jump {
+        width: 70px;
+        height: 70px;
+        font-size: 18px;
+    }
+
+    .dpad {
+        left: 12px;
+        bottom: 10px;
+    }
+
+    .action-buttons {
+        right: 12px;
+        bottom: 14px;
+    }
+}
+
+/* Portrait phone — nudge to landscape */
+@media (max-width: 600px) and (orientation: portrait) {
+    .rotate-hint {
+        display: flex !important;
+    }
+
+    canvas {
+        max-height: 40vh;
+    }
+}
+
+/* --- Rotate Hint Overlay --- */
+.rotate-hint {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(15, 23, 42, 0.92);
+    color: white;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    font-size: 18px;
+    text-align: center;
+    backdrop-filter: blur(6px);
+}
+
+.rotate-hint .icon {
+    font-size: 48px;
+    animation: wiggle 1.5s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    75% { transform: rotate(90deg); }
+}
